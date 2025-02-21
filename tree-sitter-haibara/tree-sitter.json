@@ -1,0 +1,38 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "haibara_parser",
+      "camelcase": "HaibaraParser",
+      "title": "HaibaraParser",
+      "scope": "source.haibara_parser",
+      "file-types": [
+        "haibara_parser"
+      ],
+      "injection-regex": "^haibara_parser$",
+      "class-name": "TreeSitterHaibaraParser"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "GPL-3.0",
+    "description": "A parser for the Haibara LLM query language",
+    "authors": [
+      {
+        "name": "Heng Zhong"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/heng-zhong-2003/bachelor-thesis-project"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true,
+    "zig": false
+  }
+}
