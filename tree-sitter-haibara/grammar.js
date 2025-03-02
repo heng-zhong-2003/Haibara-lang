@@ -12,30 +12,39 @@ module.exports = grammar({
 
   rules: {
     // TODO: add the actual grammar rules
-    source_file: $ => "hello",
-    query: $ => seq(
-      'query',
-      '{',
-      $.format_str,
-      '}'
+    source_file: $ => repeat($.statement),
+    statement: $ => seq(
+      choice(
+        seq('let', $.identifier, ':', choice('String', 'Session'), '=', $.expr),
+        seq(
+          'query', $.identifier, 'with', $.query_string,
+          optional(seq('requires', $.expr)),
+          optional(seq('role', $.role)),
+        ),
+        seq('print', $.expr)
+      ),
+      ';'
     ),
-    format_str: $ => seq(
-      'f',
-      '"',
+    expr: $ => choice(
+      $.identifier,
+      seq('construct_session', $.llm)
+    ),
+    query_string: $ => seq(
+      'q"',
       repeat(
         choice(
-          seq('{', $.decl, '}'),
-          token(/.*/)
+          seq('{', 'let', $.identifier, ':', 'String', '}'), // this statement can only be `let`
+          token(/[^{}"]+/)
         )
       ),
       '"'
     ),
-    decl: $ => seq(
-      'let',
-      $.identifier, // Name of variable declared
-      ':',
-      $.identifier  // Type of variable declared
+    role: $ => choice(
+      'user',
+      'assistant',
+      'system'
     ),
+    llm: $ => 'gpt',
     identifier: $ => token(/[a-zA-Z_][a-zA-Z0-9_]*/)
   }
 });

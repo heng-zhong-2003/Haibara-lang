@@ -1,1 +1,9 @@
-query { f"Kudoi Shinichi loves Shiho" }
+let a : String = b;
+let s : Session = construct_session(gpt);
+query s with q"aaa {let x:String} bbb {let y:String}" requires b role user;
+
+(source_file (statement (identifier) (expr (identifier)))
+             (statement (identifier) (expr (llm)))
+             (statement (identifier)
+                        (query_string (identifier) (identifier))
+                        (expr (identifier)) (role)))

@@ -3,40 +3,168 @@
   "name": "haibara_parser",
   "rules": {
     "source_file": {
-      "type": "STRING",
-      "value": "hello"
+      "type": "REPEAT",
+      "content": {
+        "type": "SYMBOL",
+        "name": "statement"
+      }
     },
-    "query": {
+    "statement": {
       "type": "SEQ",
       "members": [
         {
-          "type": "STRING",
-          "value": "query"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "let"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "identifier"
+                },
+                {
+                  "type": "STRING",
+                  "value": ":"
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "String"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "Session"
+                    }
+                  ]
+                },
+                {
+                  "type": "STRING",
+                  "value": "="
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "expr"
+                }
+              ]
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "query"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "identifier"
+                },
+                {
+                  "type": "STRING",
+                  "value": "with"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "query_string"
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SEQ",
+                      "members": [
+                        {
+                          "type": "STRING",
+                          "value": "requires"
+                        },
+                        {
+                          "type": "SYMBOL",
+                          "name": "expr"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SEQ",
+                      "members": [
+                        {
+                          "type": "STRING",
+                          "value": "role"
+                        },
+                        {
+                          "type": "SYMBOL",
+                          "name": "role"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "print"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "expr"
+                }
+              ]
+            }
+          ]
         },
         {
           "type": "STRING",
-          "value": "{"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "format_str"
-        },
-        {
-          "type": "STRING",
-          "value": "}"
+          "value": ";"
         }
       ]
     },
-    "format_str": {
+    "expr": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "identifier"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "construct_session"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "llm"
+            }
+          ]
+        }
+      ]
+    },
+    "query_string": {
       "type": "SEQ",
       "members": [
         {
           "type": "STRING",
-          "value": "f"
-        },
-        {
-          "type": "STRING",
-          "value": "\""
+          "value": "q\""
         },
         {
           "type": "REPEAT",
@@ -51,8 +179,20 @@
                     "value": "{"
                   },
                   {
+                    "type": "STRING",
+                    "value": "let"
+                  },
+                  {
                     "type": "SYMBOL",
-                    "name": "decl"
+                    "name": "identifier"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": ":"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "String"
                   },
                   {
                     "type": "STRING",
@@ -64,7 +204,7 @@
                 "type": "TOKEN",
                 "content": {
                   "type": "PATTERN",
-                  "value": ".*"
+                  "value": "[^{}\"]+"
                 }
               }
             ]
@@ -76,26 +216,26 @@
         }
       ]
     },
-    "decl": {
-      "type": "SEQ",
+    "role": {
+      "type": "CHOICE",
       "members": [
         {
           "type": "STRING",
-          "value": "let"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "identifier"
+          "value": "user"
         },
         {
           "type": "STRING",
-          "value": ":"
+          "value": "assistant"
         },
         {
-          "type": "SYMBOL",
-          "name": "identifier"
+          "type": "STRING",
+          "value": "system"
         }
       ]
+    },
+    "llm": {
+      "type": "STRING",
+      "value": "gpt"
     },
     "identifier": {
       "type": "TOKEN",
