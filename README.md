@@ -12,4 +12,4 @@ pip install .
 
 to build the parser and wrap it into a python package. The `--abi 14` argument is indespensible because the python binding of tree-sitter does not support the version 15 ABI, which is the default of the version 0.24.0 tree-sitter. It lacks even scarce seriousness to make the ABI and API vary to such a tremendous extent while providing NO related information in the documentation!
 
-Design documentation (in Chinese) available at [](https://www.overleaf.com/read/jffbrzmkmdyh#b4e837). This access is read only.
+Design documentation (in Chinese) available at [https://www.overleaf.com/read/jffbrzmkmdyh#b4e837](https://www.overleaf.com/read/jffbrzmkmdyh#b4e837). This access is read only.
