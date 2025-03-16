@@ -1,5 +1,109 @@
 [
   {
+    "type": "bop_expr",
+    "named": true,
+    "fields": {
+      "left": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expr",
+            "named": true
+          }
+        ]
+      },
+      "op": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "bop_and",
+            "named": true
+          },
+          {
+            "type": "bop_eq",
+            "named": true
+          },
+          {
+            "type": "bop_gt",
+            "named": true
+          },
+          {
+            "type": "bop_lt",
+            "named": true
+          },
+          {
+            "type": "bop_or",
+            "named": true
+          }
+        ]
+      },
+      "right": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expr",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "construct_session_expr",
+    "named": true,
+    "fields": {
+      "llm": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "llm",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "decl_statement",
+    "named": true,
+    "fields": {
+      "decl_expr": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expr",
+            "named": true
+          }
+        ]
+      },
+      "decl_identifier": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "decl_type": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "type",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "expr",
     "named": true,
     "fields": {},
@@ -8,29 +112,238 @@
       "required": true,
       "types": [
         {
-          "type": "identifier",
+          "type": "bop_expr",
           "named": true
         },
         {
-          "type": "llm",
+          "type": "construct_session_expr",
+          "named": true
+        },
+        {
+          "type": "primary_expr",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "query_string",
+    "type": "primary_expr",
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
-      "required": false,
+      "multiple": false,
+      "required": true,
       "types": [
         {
-          "type": "identifier",
+          "type": "primary_false_expr",
+          "named": true
+        },
+        {
+          "type": "primary_identifier_expr",
+          "named": true
+        },
+        {
+          "type": "primary_parenthesized_expr",
+          "named": true
+        },
+        {
+          "type": "primary_true_expr",
           "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "primary_identifier_expr",
+    "named": true,
+    "fields": {
+      "ident": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "primary_parenthesized_expr",
+    "named": true,
+    "fields": {
+      "expr_in_parentheses": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expr",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "primitive_type",
+    "named": true,
+    "fields": {
+      "session_type": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "Session",
+            "named": false
+          }
+        ]
+      },
+      "string_type": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "String",
+            "named": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "print_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expr",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "query_decl",
+    "named": true,
+    "fields": {
+      "decl_identifier": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "type": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "String",
+            "named": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "query_statement",
+    "named": true,
+    "fields": {
+      "context": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "query_string",
+            "named": true
+          }
+        ]
+      },
+      "query_clause": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "query",
+            "named": false
+          },
+          {
+            "type": "with",
+            "named": false
+          }
+        ]
+      },
+      "requires_clause": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "expr",
+            "named": true
+          },
+          {
+            "type": "requires",
+            "named": false
+          }
+        ]
+      },
+      "role_clause": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "role",
+            "named": false
+          },
+          {
+            "type": "role",
+            "named": true
+          }
+        ]
+      },
+      "session": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expr",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "query_string",
+    "named": true,
+    "fields": {
+      "decl": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "query_decl",
+            "named": true
+          }
+        ]
+      },
+      "segment": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "query_string_segment",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -59,23 +372,34 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
         {
-          "type": "expr",
+          "type": "decl_statement",
           "named": true
         },
         {
-          "type": "identifier",
+          "type": "print_statement",
           "named": true
         },
         {
-          "type": "query_string",
+          "type": "query_statement",
           "named": true
-        },
+        }
+      ]
+    }
+  },
+  {
+    "type": "type",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
         {
-          "type": "role",
+          "type": "primitive_type",
           "named": true
         }
       ]
@@ -83,6 +407,14 @@
   },
   {
     "type": "\"",
+    "named": false
+  },
+  {
+    "type": "(",
+    "named": false
+  },
+  {
+    "type": ")",
     "named": false
   },
   {
@@ -110,6 +442,26 @@
     "named": false
   },
   {
+    "type": "bop_and",
+    "named": true
+  },
+  {
+    "type": "bop_eq",
+    "named": true
+  },
+  {
+    "type": "bop_gt",
+    "named": true
+  },
+  {
+    "type": "bop_lt",
+    "named": true
+  },
+  {
+    "type": "bop_or",
+    "named": true
+  },
+  {
     "type": "construct_session",
     "named": false
   },
@@ -126,6 +478,14 @@
     "named": true
   },
   {
+    "type": "primary_false_expr",
+    "named": true
+  },
+  {
+    "type": "primary_true_expr",
+    "named": true
+  },
+  {
     "type": "print",
     "named": false
   },
@@ -136,6 +496,10 @@
   {
     "type": "query",
     "named": false
+  },
+  {
+    "type": "query_string_segment",
+    "named": true
   },
   {
     "type": "requires",

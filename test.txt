@@ -1,9 +1,19 @@
+print(a);
 let a : String = b;
-let s : Session = construct_session(gpt);
-query s with q"aaa {let x:String} bbb {let y:String}" requires b role user;
+let s : Session = construct_session (gpt);
+query s with q"aaa {let x:String} bbb {let y:String}" requires (a&&b) role user;
 
-(source_file (statement (identifier) (expr (identifier)))
-             (statement (identifier) (expr (llm)))
-             (statement (identifier)
-                        (query_string (identifier) (identifier))
-                        (expr (identifier)) (role)))
+[ { 'call_stmt':      { 'target': '%tmp1', 'name': 'print', 'positional_args': 'a'} }
+
+, { 'variable_decl':  { 'attrs': None, 'data_type': None, 'name': 'a' } }
+, { 'assign_stmt':    { 'data_type': None, 'target': 'a', 'operand': 'b' } }
+
+, { 'call_stmt':      { 'target': '%tmp2', 'name': 'construct_session', 'positional_args': 'gpt' } }
+, { 'variable_decl':  { 'attrs': None, 'data_type': None, 'name': 's' } }
+, { 'assign_stmt':    { 'data_type': None, 'target': 's', 'operand': '%tmp2' } }
+
+, { 'query_stmt':     { 'session': 's'
+                      , 'content': [ ('segment', 'aaa ')
+                                   , ('query_decl', 'dummy_type', 'x')
+                                   , ('segment', ' bbb ')
+                                   , ('query_decl', 'dummy_type', 'y') ] } } ]
