@@ -281,27 +281,19 @@
         ]
       },
       "requires_clause": {
-        "multiple": true,
+        "multiple": false,
         "required": false,
         "types": [
           {
             "type": "expr",
             "named": true
-          },
-          {
-            "type": "requires",
-            "named": false
           }
         ]
       },
       "role_clause": {
-        "multiple": true,
+        "multiple": false,
         "required": false,
         "types": [
-          {
-            "type": "role",
-            "named": false
-          },
           {
             "type": "role",
             "named": true

@@ -437,11 +437,11 @@ static const TSMapSlice ts_field_map_slices[PRODUCTION_ID_COUNT] = {
   [9] = {.index = 13, .length = 1},
   [10] = {.index = 14, .length = 2},
   [11] = {.index = 16, .length = 4},
-  [12] = {.index = 20, .length = 6},
-  [13] = {.index = 26, .length = 6},
-  [14] = {.index = 32, .length = 3},
-  [15] = {.index = 35, .length = 8},
-  [16] = {.index = 43, .length = 2},
+  [12] = {.index = 20, .length = 5},
+  [13] = {.index = 25, .length = 5},
+  [14] = {.index = 30, .length = 3},
+  [15] = {.index = 33, .length = 6},
+  [16] = {.index = 39, .length = 2},
 };
 
 static const TSFieldMapEntry ts_field_map_entries[] = {
@@ -480,30 +480,26 @@ static const TSFieldMapEntry ts_field_map_entries[] = {
     {field_context, 3},
     {field_query_clause, 0},
     {field_query_clause, 2},
-    {field_requires_clause, 4},
     {field_requires_clause, 5},
     {field_session, 1},
-  [26] =
+  [25] =
     {field_context, 3},
     {field_query_clause, 0},
     {field_query_clause, 2},
-    {field_role_clause, 4},
     {field_role_clause, 5},
     {field_session, 1},
-  [32] =
+  [30] =
     {field_decl_expr, 5},
     {field_decl_identifier, 1},
     {field_decl_type, 3},
-  [35] =
+  [33] =
     {field_context, 3},
     {field_query_clause, 0},
     {field_query_clause, 2},
-    {field_requires_clause, 4},
     {field_requires_clause, 5},
-    {field_role_clause, 6},
     {field_role_clause, 7},
     {field_session, 1},
-  [43] =
+  [39] =
     {field_decl_identifier, 2},
     {field_type, 4},
 };

@@ -9,7 +9,7 @@ class TransHaibara:
     def __init__(self) -> None:
         self.tmp_variable_id: int = 0
     
-    type GIRCommand = dict[str, Any]
+    type GIRCommand = dict[str, dict[str, Any]]
 
     def generate_tmp_variable(self) -> str:
         self.tmp_variable_id += 1
@@ -36,7 +36,7 @@ class TransHaibara:
             case 'decl_statement':
                 self.trans_decl_statement(concrete_stmt, gir_statements)
             case 'query_statement':
-                print('trans_query_statement')
+                # print('trans_query_statement')
                 self.trans_query_statement(concrete_stmt, gir_statements)
 
     def trans_print_statement(self, node: Node, gir_statements: list[GIRCommand]) -> None:
@@ -64,7 +64,10 @@ class TransHaibara:
             'query_stmt': {
                 'session': <session_name>,
                 'content': [tuple['segment', str] | tuple['query_decl', type, identifier]],
-                optional 'constraint': <temp/var storing constraint_expr>,
+                optional 'constraint': {
+                    'constraint_compute_stmts': [<stmt>],
+                    'constraint_value': <temp/var storing constraint_expr>,
+                },
                 optional 'role': <role: str>,
             },
         }
@@ -107,11 +110,15 @@ class TransHaibara:
             'session': gir_session,
             'content': gir_query_component
         }
-        constraint: Node | None = node.child_by_field_name('requires')
+        constraint: Node | None = node.child_by_field_name('requires_clause')
         if constraint != None:
-            constraint_tmp = self.trans_expression(constraint, gir_statements)
-            gir_query_internal['constraint'] = constraint_tmp
-        role: Node | None = node.child_by_field_name('role')
+            compute_constraint_stmts: list[TransHaibara.GIRCommand] = []
+            constraint_tmp: str = self.trans_expression(constraint, compute_constraint_stmts)
+            gir_query_internal['constraint'] = {
+                'constraint_compute_stmts': compute_constraint_stmts,
+                'constraint_value': constraint_tmp,
+            }
+        role: Node | None = node.child_by_field_name('role_clause')
         if role != None:
             gir_query_internal['role'] = node_util.read_node_text(role)
         gir_query_stmt: TransHaibara.GIRCommand = {'query_stmt': gir_query_internal}
@@ -215,4 +222,34 @@ class TransHaibara:
         return llm_construct_tmp
 
     def trans_bop_expression(self, node: Node, gir_statements: list[GIRCommand]) -> str:
-        return ''
+        left_opd: Node | None = node.child_by_field_name('left')
+        if left_opd == None:
+            sys.exit('Error: binary operator has `None` left operand')
+        right_opd: Node | None = node.child_by_field_name('right')
+        if right_opd == None:
+            sys.exit('Error: binary operator has `None` right operand')
+        optr: Node | None = node.child_by_field_name('op')
+        if optr == None:
+            sys.exit('Error: binary operator has `None` operator')
+        left_tmp: str = self.trans_expression(left_opd, gir_statements)
+        right_tmp: str = self.trans_expression(right_opd, gir_statements)
+        rslt_tmp: str = self.generate_tmp_variable()
+        gir_decl_tmp: TransHaibara.GIRCommand = {
+            'variable_decl': {
+                'attrs': None,
+                'data_type': None,  # TODO: trans_type
+                'name': rslt_tmp,
+            }
+        }
+        gir_bop: TransHaibara.GIRCommand = {
+            'assign_stmt': {
+                'data_type': None,
+                'target': rslt_tmp,
+                'operand': left_tmp,
+                'operator': node_util.read_node_text(optr),
+                'operand2': right_tmp,
+            }
+        }
+        gir_statements.append(gir_decl_tmp)
+        gir_statements.append(gir_bop)
+        return rslt_tmp

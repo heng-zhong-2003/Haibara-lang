@@ -3,17 +3,27 @@ let a : String = b;
 let s : Session = construct_session (gpt);
 query s with q"aaa {let x:String} bbb {let y:String}" requires (a&&b) role user;
 
-[ { 'call_stmt':      { 'target': '%tmp1', 'name': 'print', 'positional_args': 'a'} }
+[ { 'call_stmt': { 'target': '%tmp1', 'name': 'print', 'positional_args': 'a' } }
 
-, { 'variable_decl':  { 'attrs': None, 'data_type': None, 'name': 'a' } }
-, { 'assign_stmt':    { 'data_type': None, 'target': 'a', 'operand': 'b' } }
+, { 'variable_decl': { 'attrs': None, 'data_type': None, 'name': 'a' } }
+, { 'assign_stmt': { 'data_type': None, 'target': 'a', 'operand': 'b' } }
 
-, { 'call_stmt':      { 'target': '%tmp2', 'name': 'construct_session', 'positional_args': 'gpt' } }
-, { 'variable_decl':  { 'attrs': None, 'data_type': None, 'name': 's' } }
-, { 'assign_stmt':    { 'data_type': None, 'target': 's', 'operand': '%tmp2' } }
+, { 'call_stmt': { 'target': '%tmp2', 'name': 'construct_session', 'positional_args': 'gpt' } }
+, { 'variable_decl': { 'attrs': None, 'data_type': None, 'name': 's' } }
+, { 'assign_stmt': { 'data_type': None, 'target': 's', 'operand': '%tmp2' } }
 
-, { 'query_stmt':     { 'session': 's'
-                      , 'content': [ ('segment', 'aaa ')
-                                   , ('query_decl', 'dummy_type', 'x')
-                                   , ('segment', ' bbb ')
-                                   , ('query_decl', 'dummy_type', 'y') ] } } ]
+, { 'query_stmt': { 'session': 's'
+                  , 'content': [ ('segment', 'aaa ')
+                               , ('query_decl', 'dummy_type', 'x')
+                               , ('segment', ' bbb ')
+                               , ('query_decl', 'dummy_type', 'y') ]
+                  , 'constraint': {
+                      'constraint_compute_stmts': [
+                        { 'variable_decl': { 'attrs': None, 'data_type': None, 'name': '%tmp3' } },
+                        { 'assign_stmt': { 'data_type': None
+                                         , 'target': '%tmp3'
+                                         , 'operand': 'a'
+                                         , 'operator': '&&'
+                                         , 'operand2': 'b'} } ]
+                    , 'constraint_value': '%tmp3' }
+                  , 'role': 'user' } } ]

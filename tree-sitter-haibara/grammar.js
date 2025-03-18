@@ -36,8 +36,8 @@ module.exports = grammar({
         'query_clause',
         seq('query', field('session', $.expr), 'with', field('context', $.query_string))
       ),
-      optional(field('requires_clause', seq('requires', $.expr))),
-      optional(field('role_clause', seq('role', $.role))),
+      optional(seq('requires', field('requires_clause', $.expr))),
+      optional(seq('role', field('role_clause', $.role))),
     ),
     decl_statement: $ => seq(
       'let',
