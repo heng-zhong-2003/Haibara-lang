@@ -3,6 +3,7 @@ import sys
 from colorama import Fore, Style
 from dataclasses import dataclass
 from frontend.cst_to_gir import TransHaibara
+from interpret.session import Session
 
 class ScopeSep:
     """
@@ -13,17 +14,15 @@ class ScopeSep:
     def __init__(self) -> None:
         pass
 
+
 # type for runtime values in the environment of the interpreter
-type ValueType = str | bool | ScopeSep | None
-# represents types of variables in Haibara (the object language), may be
-# extended to structural representation (algebraic data type) in the future
-type VarType = str
+type RuntimeValue = str | bool | ScopeSep | Session | None
 
 
 @dataclass
 class ValueEnvEntry:
-    ty: VarType
-    val: ValueType
+    type_name: str
+    val: RuntimeValue
 
 
 class ValueEnv:
@@ -43,6 +42,8 @@ class ValueEnv:
     def exit_scope(self) -> None:
         for _, stk in self.name_type_value_map.items():
             while True:
+                if len(stk) == 0:
+                    break
                 stack_top = stk.pop()
                 match stack_top:
                     case ScopeSep():
@@ -50,7 +51,7 @@ class ValueEnv:
                     case _:
                         pass
 
-    def get_value_of_variable(self, identifier: str) -> ValueType:
+    def get_value_of_variable(self, identifier: str) -> RuntimeValue:
         """
         Return the value of the newest declaration of `identifier`. Error
         and exit if `identifier` not declared at all.
@@ -67,7 +68,7 @@ class ValueEnv:
         # Undefined because there is only scope seperators in `identifier`'s stack
         sys.exit('Error: cannot `get_value` of an undefined identifier.')
 
-    def declare_variable(self, identifier: str, ty: VarType) -> None:
+    def declare_variable(self, identifier: str, type_name: str) -> None:
         """
         Add a new variable to current scope. Sets its runtime value to `None`.
         If the same identifier already in outer-layer scope, the old declaration
@@ -76,11 +77,41 @@ class ValueEnv:
         (together with its value) will be shadowed forever (since it will be
         deleted when exiting the current scope).
         """
-        pass
+        if identifier not in self.name_type_value_map:
+            self.name_type_value_map[identifier] = [ValueEnvEntry(type_name, None)]
+        else:
+            stk: list[ValueEnvEntry] = self.name_type_value_map[identifier]
+            is_in_current_scope: bool = False
+            occur_pos: int = -1
+            for i in range(len(stk) - 1, -1, -1):
+                match stk[i]:
+                    case ScopeSep():
+                        break
+                    case _:
+                        is_in_current_scope = True
+                        occur_pos = i
+            if is_in_current_scope:
+                stk[occur_pos] = ValueEnvEntry(type_name, None)
+            else:
+                stk.append(ValueEnvEntry(type_name, None))
 
-    def assign_variable(self, identifier: str, new_value: ValueType) -> None:
+    def assign_variable(self, identifier: str, new_value: RuntimeValue) -> None:
         """
         Assign `new_value` to the newest (closest to the stack top) declaration
         of `identifier`. Error and exit if `identifier` not declared at all.
         """
-        pass
+        if identifier not in self.name_type_value_map:
+            sys.exit('Error: assigning to undeclared variable.')
+        stk: list[ValueEnvEntry] = self.name_type_value_map[identifier]
+        latest_decl_index: int = -1
+        for i in range(len(stk) - 1, -1, -1):
+            match stk[i]:
+                case ScopeSep():
+                    pass
+                case _:
+                    latest_decl_index = i
+                    break
+        if latest_decl_index == -1:
+            sys.exit('Error: assigning to undeclared variable, all '
+                     'entries in `stk` are separators.')
+        stk[latest_decl_index] = ValueEnvEntry(stk[latest_decl_index].type_name, new_value)

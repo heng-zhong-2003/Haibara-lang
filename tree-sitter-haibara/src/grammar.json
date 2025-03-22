@@ -599,8 +599,17 @@
       ]
     },
     "llm": {
-      "type": "STRING",
-      "value": "gpt"
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "gpt"
+        },
+        {
+          "type": "STRING",
+          "value": "zhipu"
+        }
+      ]
     },
     "identifier": {
       "type": "TOKEN",

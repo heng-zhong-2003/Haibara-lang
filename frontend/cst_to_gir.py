@@ -211,6 +211,13 @@ class TransHaibara:
             sys.exit('Error: empty llm name.')
         llm_name: str = node_util.read_node_text(llm)
         llm_construct_tmp: str = self.generate_tmp_variable()
+        gir_decl: TransHaibara.GIRCommand = {
+            'variable_decl': {
+                'attrs': None,
+                'data_type': None,
+                'name': llm_construct_tmp,
+            }
+        }
         gir_call: TransHaibara.GIRCommand = {
             'call_stmt': {
                 'target': llm_construct_tmp,
@@ -218,6 +225,7 @@ class TransHaibara:
                 'positional_args': llm_name,
             }
         }
+        gir_statements.append(gir_decl)
         gir_statements.append(gir_call)
         return llm_construct_tmp
 

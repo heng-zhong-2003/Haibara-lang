@@ -97,7 +97,7 @@ module.exports = grammar({
       'assistant',
       'system'
     ),
-    llm: $ => 'gpt',
+    llm: $ => choice('gpt', 'zhipu'),
     identifier: $ => token(/[a-zA-Z_][a-zA-Z0-9_]*/)
   }
 });

@@ -127,6 +127,11 @@
     }
   },
   {
+    "type": "llm",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "primary_expr",
     "named": true,
     "fields": {},
@@ -458,16 +463,16 @@
     "named": false
   },
   {
+    "type": "gpt",
+    "named": false
+  },
+  {
     "type": "identifier",
     "named": true
   },
   {
     "type": "let",
     "named": false
-  },
-  {
-    "type": "llm",
-    "named": true
   },
   {
     "type": "primary_false_expr",
@@ -511,6 +516,10 @@
   },
   {
     "type": "with",
+    "named": false
+  },
+  {
+    "type": "zhipu",
     "named": false
   },
   {
