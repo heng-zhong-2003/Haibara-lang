@@ -59,7 +59,7 @@ class Interpreter:
                 llm_name: str = cmd['call_stmt']['positional_args']
                 new_sess: Session = Session(
                     llm_name,
-                    'Replace with concete key!'
+                    'TODO: replace with real api key!'
                 )
                 target_tmp: str = cmd['call_stmt']['target']
                 self.var_type_value_env.assign_variable(target_tmp, new_sess)
