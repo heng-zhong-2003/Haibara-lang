@@ -51,13 +51,16 @@ class ValueEnv:
                     case _:
                         pass
 
+    def contains_variable(self, identifier: str) -> RuntimeValue:
+        return identifier in self.name_type_value_map
+
     def get_value_of_variable(self, identifier: str) -> RuntimeValue:
         """
         Return the value of the newest declaration of `identifier`. Error
         and exit if `identifier` not declared at all.
         """
         if identifier not in self.name_type_value_map:
-            sys.exit('Error: cannot `get_value` of an undefined identifier.')
+            sys.exit(f'Error: cannot `get_value` of an undefined identifier {identifier}.')
         stk: list[ValueEnvEntry] = self.name_type_value_map[identifier]
         for i in range(len(stk) - 1, -1, -1):
             match stk[i]:
@@ -65,8 +68,8 @@ class ValueEnv:
                     pass
                 case _:
                     return stk[i].val
-        # Undefined because there is only scope seperators in `identifier`'s stack
-        sys.exit('Error: cannot `get_value` of an undefined identifier.')
+        # Undefined because there is only scope separators in `identifier`'s stack
+        sys.exit('Error: cannot `get_value` of an undefined identifier, only separators.')
 
     def declare_variable(self, identifier: str, type_name: str) -> None:
         """

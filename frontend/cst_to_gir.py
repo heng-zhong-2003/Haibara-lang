@@ -63,7 +63,8 @@ class TransHaibara:
         {
             'query_stmt': {
                 'session': <session_name>,
-                'content': [tuple['segment', str] | tuple['query_decl', type, identifier]],
+                'content': [tuple['segment', str] | tuple['query_decl', type, identifier]
+                           s| tuple['variable', identifier]],
                 optional 'constraint': {
                     'constraint_compute_stmts': [<stmt>],
                     'constraint_value': <temp/var storing constraint_expr>,
@@ -104,6 +105,15 @@ class TransHaibara:
                         node_util.read_node_text(component)
                     )
                     gir_query_component.append(gir_string_segment)
+                case 'query_format_variable':
+                    format_var_ident: Node | None = \
+                        component.child_by_field_name('variable_identifier')
+                    if format_var_ident == None:
+                        sys.exit('Error: empty format variable in query string.')
+                    gir_format_variable: tuple[str, str] = (
+                        'variable',
+                        node_util.read_node_text(format_var_ident)
+                    )
                 case _:
                     continue
         gir_query_internal: dict[str, Any] = {
@@ -169,6 +179,7 @@ class TransHaibara:
                 return self.trans_bop_expression(concrete_expr, gir_statements)
             case _:
                 sys.exit('Error: unidentified expression kind.')
+        sys.exit(f'{Fore.RED}Should not reach here!{Style.RESET_ALL}')
         # Unreachable `return`. Added to conciliate mypy.
         return ''
 
@@ -200,6 +211,28 @@ class TransHaibara:
                 pass
             case 'primary_false_expr':
                 pass
+            case 'primary_string_literal_expr':
+                content_str: str = node_util.read_node_text(node)
+                content_str = content_str[1:-1]
+                literal_tmp: str= self.generate_tmp_variable()
+                gir_decl: TransHaibara.GIRCommand = {
+                    'variable_decl': {
+                        'attrs': None,
+                        'data_type': 'String', # TODO: trans_type
+                        'name': literal_tmp,
+                    }
+                }
+                # print(f'{Fore.MAGENTA}Format variable content: {content_str}{Style.RESET_ALL}')
+                gir_assign: TransHaibara.GIRCommand = {
+                    'assign_stmt': {
+                        'target': literal_tmp,
+                        'data_type': 'String', # TODO: trans_type
+                        'operand': f'%lit:{content_str}',
+                    }
+                }
+                gir_statements.append(gir_decl)
+                gir_statements.append(gir_assign)
+                return literal_tmp
             case _:
                 sys.exit('Error: unidentified primary expression kind.')
         # Unreachable `return`. Added to conciliate mypy.
@@ -210,7 +243,7 @@ class TransHaibara:
         if llm == None:
             sys.exit('Error: empty llm name.')
         llm_name: str = node_util.read_node_text(llm)
-        llm_construct_tmp: str = self.generate_tmp_variable()
+        llm_construct_tmp: str= self.generate_tmp_variable()
         gir_decl: TransHaibara.GIRCommand = {
             'variable_decl': {
                 'attrs': None,
@@ -241,7 +274,7 @@ class TransHaibara:
             sys.exit('Error: binary operator has `None` operator')
         left_tmp: str = self.trans_expression(left_opd, gir_statements)
         right_tmp: str = self.trans_expression(right_opd, gir_statements)
-        rslt_tmp: str = self.generate_tmp_variable()
+        rslt_tmp: str= self.generate_tmp_variable()
         gir_decl_tmp: TransHaibara.GIRCommand = {
             'variable_decl': {
                 'attrs': None,

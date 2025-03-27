@@ -3,6 +3,7 @@ from typing import Any, Callable
 from frontend.cst_to_gir import TransHaibara
 from interpret.session import Session
 from interpret.value_env import ValueEnv, RuntimeValue
+from colorama import Fore, Style
 
 class Interpreter:
     def __init__(self) -> None:
@@ -18,6 +19,7 @@ class Interpreter:
     def interp(self, gir_prog: list[TransHaibara.GIRCommand]) -> None:
         for cmd in gir_prog:
             cmd_kind: str = next(iter(cmd))
+            # print(f'{Fore.RED}cmd: {cmd}\ncmd_kind: {cmd_kind}{Style.RESET_ALL}\n')
             interp_cmd: Callable[[TransHaibara.GIRCommand], Any] = \
                 self.gir_stmt_kind_interp_table[cmd_kind]
             interp_cmd(cmd)
@@ -41,7 +43,11 @@ class Interpreter:
             self.var_type_value_env.assign_variable(target_name, bin_expr_rslt)
         else:
             src_name: str = cmd['assign_stmt']['operand']
-            src_value: RuntimeValue = self.var_type_value_env.get_value_of_variable(src_name)
+            src_value: RuntimeValue
+            if src_name[0:5] == r'%lit:':
+                src_value = src_name
+            else:
+                src_value = self.var_type_value_env.get_value_of_variable(src_name)
             self.var_type_value_env.assign_variable(target_name, src_value)
 
     def interp_call_stmt(self, cmd: TransHaibara.GIRCommand) -> None:
@@ -59,7 +65,7 @@ class Interpreter:
                 llm_name: str = cmd['call_stmt']['positional_args']
                 new_sess: Session = Session(
                     llm_name,
-                    'TODO: replace with real api key!'
+                    'TODO: replace with real API key.'
                 )
                 target_tmp: str = cmd['call_stmt']['target']
                 self.var_type_value_env.assign_variable(target_tmp, new_sess)
@@ -71,6 +77,10 @@ class Interpreter:
                 query_string += f' {content_component[2]} '
             elif content_component[0] == 'segment':
                 query_string += content_component[1]
+            elif content_component[0] == 'variable':
+                ident: str = content_component[1]
+                val: RuntimeValue = self.var_type_value_env.get_value_of_variable(ident)
+                query_string += str(val)
             else:
                 sys.exit('Error: unidentified `query_stmt` content component.')
         session_name: str = cmd['query_stmt']['session']

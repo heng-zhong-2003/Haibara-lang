@@ -1,0 +1,88 @@
+let s : Session = construct_session (zhipu);
+query s with q"Write for me a quicksort in c: {let qs:String}. You have to wrap the c code in a json field named `qs`. Do not include any other characters other then the json in your reply.";
+print(qs);
+query s with q"The shell code to save this quicksort program to a local file named `quick.c` is {let cmd:String}. My environment is Ubuntu 22.01, using gcc and bash. You have to wrap the command in a json field named `cmd`. \
+Do not include any other characters other then the json in your reply.";
+print(cmd);
+
+/*
+./run.sh 
+Processing /Users/nicolasbourbaki/Desktop/Year4Sem2/Thesis/bachelor-thesis-project/tree-sitter-haibara
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Building wheels for collected packages: tree-sitter-haibara-parser
+  Building wheel for tree-sitter-haibara-parser (pyproject.toml) ... done
+  Created wheel for tree-sitter-haibara-parser: filename=tree_sitter_haibara_parser-0.1.0-cp310-abi3-macosx_11_0_arm64.whl size=9439 sha256=c804205731b0e3e9f3172f05c78dee4ad98366a9767d2b1c73d7008f226d9e2f
+  Stored in directory: /Users/nicolasbourbaki/Library/Caches/pip/wheels/da/30/1f/a298f1d296fbe7c6817d2692e22f391eeb5381cfa70cbb2f49
+Successfully built tree-sitter-haibara-parser
+Installing collected packages: tree-sitter-haibara-parser
+  Attempting uninstall: tree-sitter-haibara-parser
+    Found existing installation: tree-sitter-haibara-parser 0.1.0
+    Uninstalling tree-sitter-haibara-parser-0.1.0:
+      Successfully uninstalled tree-sitter-haibara-parser-0.1.0
+Successfully installed tree-sitter-haibara-parser-0.1.0
+---- Concrete Syntax Tree ---
+(source_file (statement (decl_statement decl_identifier: (identifier) decl_type: (type (primitive_type)) decl_expr: (expr (construct_session_expr llm: (llm))))) (statement (query_statement session: (expr (primary_expr (primary_identifier_expr ident: (identifier)))) context: (query_string segment: (query_string_segment) decl: (query_decl decl_identifier: (identifier)) segment: (query_string_segment)))) (statement (print_statement (expr (primary_expr (primary_identifier_expr ident: (identifier)))))) (statement (query_statement session: (expr (primary_expr (primary_identifier_expr ident: (identifier)))) context: (query_string segment: (query_string_segment) decl: (query_decl decl_identifier: (identifier)) segment: (query_string_segment)))) (statement (print_statement (expr (primary_expr (primary_identifier_expr ident: (identifier)))))))
+---- GIR statements ----
+[{'variable_decl': {'attrs': None, 'data_type': None, 'name': '%tmp1'}}, {'call_stmt': {'target': '%tmp1', 'name': 'construct_session', 'positional_args': 'zhipu'}}, {'variable_decl': {'attrs': None, 'data_type': None, 'name': 's'}}, {'assign_stmt': {'data_type': None, 'target': 's', 'operand': '%tmp1'}}, {'query_stmt': {'session': 's', 'content': [('segment', 'Write for me a quicksort in c: '), ('query_decl', 'dummy_type', 'qs'), ('segment', '. You have to wrap the c code in a json field named `qs`. Do not include any other characters other then the json in your reply.')]}}, {'call_stmt': {'target': '%tmp2', 'name': 'print', 'positional_args': 'qs'}}, {'query_stmt': {'session': 's', 'content': [('segment', 'The shell code to save this quicksort program to a local file named `quick.c` is '), ('query_decl', 'dummy_type', 'cmd'), ('segment', '. My environment is Ubuntu 22.01, using gcc and bash. You have to wrap the command in a json field named `cmd`. \\\nDo not include any other characters other then the json in your reply.')]}}, {'call_stmt': {'target': '%tmp3', 'name': 'print', 'positional_args': 'cmd'}}]
+Response to init message: Completion(model='glm-4-plus', created=1743049675, choices=[CompletionChoice(index=0, finish_reason='stop', message=CompletionMessage(content='{"message": "Understood. I\'m ready to fill in the blanks as per your instructions."}', role='assistant', tool_calls=None))], request_id='20250327122754bda274eadffa4283', id='20250327122754bda274eadffa4283', usage=CompletionUsage(prompt_tokens=150, completion_tokens=23, total_tokens=173))
+LLM response json slice: ```json
+{
+  "qs": "void quickSort(int arr[], int low, int high) {\n    if (low < high) {\n        int pi = partition(arr, low, high);\n        quickSort(arr, low, pi - 1);\n        quickSort(arr, pi + 1, high);\n    }\n}\n\nint partition(int arr[], int low, int high) {\n    int pivot = arr[high];\n    int i = (low - 1);\n    for (int j = low; j <= high - 1; j++) {\n        if (arr[j] < pivot) {\n            i++;\n            swap(&arr[i], &arr[j]);\n        }\n    }\n    swap(&arr[i + 1], &arr[high]);\n    return (i + 1);\n}\n\nvoid swap(int* a, int* b) {\n    int t = *a;\n    *a = *b;\n    *b = t;\n}"
+}
+```
+void quickSort(int arr[], int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high);
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}
+
+int partition(int arr[], int low, int high) {
+    int pivot = arr[high];
+    int i = (low - 1);
+    for (int j = low; j <= high - 1; j++) {
+        if (arr[j] < pivot) {
+            i++;
+            swap(&arr[i], &arr[j]);
+        }
+    }
+    swap(&arr[i + 1], &arr[high]);
+    return (i + 1);
+}
+
+void swap(int* a, int* b) {
+    int t = *a;
+    *a = *b;
+    *b = t;
+}
+LLM response json slice: {"cmd": "echo 'void quickSort(int arr[], int low, int high) {\n    if (low < high) {\n        int pi = partition(arr, low, high);\n        quickSort(arr, low, pi - 1);\n        quickSort(arr, pi + 1, high);\n    }\n}\n\nint partition(int arr[], int low, int high) {\n    int pivot = arr[high];\n    int i = (low - 1);\n    for (int j = low; j <= high - 1; j++) {\n        if (arr[j] < pivot) {\n            i++;\n            swap(&arr[i], &arr[j]);\n        }\n    }\n    swap(&arr[i + 1], &arr[high]);\n    return (i + 1);\n}\n\nvoid swap(int* a, int* b) {\n    int t = *a;\n    *a = *b;\n    *b = t;\n}' > quick.c"}
+echo 'void quickSort(int arr[], int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high);
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}
+
+int partition(int arr[], int low, int high) {
+    int pivot = arr[high];
+    int i = (low - 1);
+    for (int j = low; j <= high - 1; j++) {
+        if (arr[j] < pivot) {
+            i++;
+            swap(&arr[i], &arr[j]);
+        }
+    }
+    swap(&arr[i + 1], &arr[high]);
+    return (i + 1);
+}
+
+void swap(int* a, int* b) {
+    int t = *a;
+    *a = *b;
+    *b = t;
+}' > quick.c
+*/

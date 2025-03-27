@@ -152,6 +152,10 @@
           "named": true
         },
         {
+          "type": "primary_string_literal_expr",
+          "named": true
+        },
+        {
           "type": "primary_true_expr",
           "named": true
         }
@@ -184,6 +188,22 @@
         "types": [
           {
             "type": "expr",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "primary_string_literal_expr",
+    "named": true,
+    "fields": {
+      "content": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "string_literal_content",
             "named": true
           }
         ]
@@ -252,6 +272,22 @@
           {
             "type": "String",
             "named": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "query_format_variable",
+    "named": true,
+    "fields": {
+      "variable_identifier": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
           }
         ]
       }
@@ -331,6 +367,16 @@
           }
         ]
       },
+      "format_variable": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "query_format_variable",
+            "named": true
+          }
+        ]
+      },
       "segment": {
         "multiple": true,
         "required": false,
@@ -342,6 +388,11 @@
         ]
       }
     }
+  },
+  {
+    "type": "query_string_segment",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "role",
@@ -386,6 +437,11 @@
         }
       ]
     }
+  },
+  {
+    "type": "string_literal_content",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "type",
@@ -493,10 +549,6 @@
   {
     "type": "query",
     "named": false
-  },
-  {
-    "type": "query_string_segment",
-    "named": true
   },
   {
     "type": "requires",

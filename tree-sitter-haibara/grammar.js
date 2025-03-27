@@ -74,23 +74,28 @@ module.exports = grammar({
       $.primary_parenthesized_expr,
       $.primary_identifier_expr,
       $.primary_true_expr,
-      $.primary_false_expr
+      $.primary_false_expr,
+      $.primary_string_literal_expr
     ),
     primary_parenthesized_expr: $ => seq('(', field('expr_in_parentheses', $.expr), ')'),
     primary_identifier_expr: $ => field('ident', $.identifier),
     primary_true_expr: $ => 'true',
     primary_false_expr: $ => 'false',
+    primary_string_literal_expr: $ => seq('"', field('content', $.string_literal_content), '"'),
+    string_literal_content: $ => /[^{}"]+/,
     query_string: $ => seq(
       'q"',
       repeat(
         choice(
           field('decl', $.query_decl),
-          field('segment', $.query_string_segment)
+          field('segment', $.query_string_segment),
+          field('format_variable', $.query_format_variable)
         )
       ),
       '"'
     ),
     query_decl: $ => seq('{', 'let', field('decl_identifier', $.identifier), ':', field('type', 'String'), '}'),
+    query_format_variable: $ => seq('{', field('variable_identifier', $.identifier), '}'),
     query_string_segment: $ => token(/[^{}"]+/),
     role: $ => choice(
       'user',
