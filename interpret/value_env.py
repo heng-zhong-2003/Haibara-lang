@@ -16,7 +16,7 @@ class ScopeSep:
 
 
 # type for runtime values in the environment of the interpreter
-type RuntimeValue = str | bool | ScopeSep | Session | None
+type RuntimeValue = str | bool | int | ScopeSep | Session | None
 
 
 @dataclass
@@ -40,13 +40,16 @@ class ValueEnv:
             stk.append(ValueEnvEntry('ScopeSep', ScopeSep()))
 
     def exit_scope(self) -> None:
-        for _, stk in self.name_type_value_map.items():
+        for var_name, stk in self.name_type_value_map.items():
+            # print(f'Popping stack of {var_name}')
             while True:
                 if len(stk) == 0:
                     break
                 stack_top = stk.pop()
-                match stack_top:
+                # print(f'Exit scope, poped {stack_top}')
+                match stack_top.val:
                     case ScopeSep():
+                        # print(f'{Fore.RED}ScopeSep popped{Style.RESET_ALL}')
                         break
                     case _:
                         pass
@@ -69,7 +72,8 @@ class ValueEnv:
                 case _:
                     return stk[i].val
         # Undefined because there is only scope separators in `identifier`'s stack
-        sys.exit('Error: cannot `get_value` of an undefined identifier, only separators.')
+        sys.exit(f'Error: cannot `get_value` of an '
+                 f'undefined identifier {identifier}, only separators.')
 
     def declare_variable(self, identifier: str, type_name: str) -> None:
         """

@@ -1,30 +1,3 @@
-import os
-import sys
-from os import path
-from pathlib import Path
-import tree_sitter
-from tree_sitter import Tree, Language, Parser
-import tree_sitter_haibara_parser
-from frontend.cst_to_gir import TransHaibara
-from interpret.interpreter import Interpreter
-from colorama import Fore, Style
-# import pprint
-
-HAIBARA_LANGUAGE = Language(tree_sitter_haibara_parser.language())
-parser = Parser(HAIBARA_LANGUAGE)
-source_code = r'''
-let s : Session = construct_session (zhipu);
-query s with q"The reason that some audience think there is a romantic relation between Conan and Ai Haibara is {let reason:String}";
-print(reason);
-query s with q"Two essential properties that have to be verified to prove the type safety of a programming language is {let cond1:String} and {let cond2:String}.";
-print(cond1);
-print(cond2);
-query s with q"I think they should be progress and preservation. So answer me again: the two conditions are {let c1:String} and {let c2:String}."
-print(c1);
-print(c2);
-'''
-
-source_code = r'''
 let s : Session = construct_session (zhipu);
 let format_req : String = "Do not include any other characters other then the json in your reply";
 let copyright_law : String = "Article 30 A book publisher who publishes a book shall conclude a publishing contract with, and pay remuneration to, the copyright owner. Article 31 A book publisher shall have the exclusive right to publish the work delivered to him by the copyright owner for publication. The exclusive right to publish a work enjoyed by the book publisher specified in the contract shall be protected by law, and the work may not be published by others. Article 32 The copyright owner shall deliver the work within the term specified in the contract. The book publisher shall publish the work in accordance with the quality requirements and within the term specified in the contract. The book publisher shall bear the civil liability specified in Article 53 of this Law if he fails to publish the work within the term specified in the contract. The book publisher shall notify, and pay remuneration to, the copyright owner when the work is to be reprinted or republished. If the publisher refuses to reprint or republish the work when stocks of the book are exhausted, the copyright owner shall have the right to terminate the contrast.  Article 33 Where a copyright owner has submitted the manuscript of his work to a newspaper or a periodical publisher for publication and has not received, within 15 days from the newspaper publisher or within 30 days from the periodical publisher, counted from the date of submission of the manuscript, any notification of the said publisher's decision to publish the work, the copyright owner may submit the manuscript of the same work to another newspaper or periodical publisher for publication, unless the two parties have agreed otherwise. Except where the copyright owner has declared that reprinting or excerpting is not permitted, other newspaper or periodical publishers may, after the publication of the work by a newspaper or periodical, reprint the work or print an abstract of it or print it as reference material, but such other publishers shall pay remuneration to the copyright owner as prescribed in regulations.  Article 34 A book publisher may alter or abridge a work with the permission of the copyright owner. A newspaper or periodical publisher may make editorial modifications and abridgements in a work, but shall not make modifications in the contents of the work unless permission has been obtained from the author.  Article 35 When publishing works created by adaptation, translation, annotation, arrangement or compilation of preexisting works, the publisher shall both have the permission from, and pay remuneration to, the owners of the copyright in the works created by means of adaptation, translation, annotation, arrangement or compilation and the owners of the copyright in the original works. Article 36 A publisher has the right to license or prohibit any other person to use the typographical arrangement of books or periodicals he has published. The term of protection for the right provided for in the preceding paragraph shall be ten years, and expires on 3l December of the tenth year after the first publication of the books or periodicals using the typographical arrangement.";
@@ -49,27 +22,3 @@ The content of the field `reason` must be the rationale of your answer. {format_
 
 print (ans);
 print (reason);
-'''
-
-source_code = r'''
-let c: Bool = false;
-if c then {
-    let a: Int = 3;
-    print(a);
-} else {
-    let b: Int = 4;
-    print(b);
-}
-print(c);
-'''
-
-tree: Tree = parser.parse(bytes(source_code, 'utf8'))
-trans = TransHaibara()
-print(f'{Fore.GREEN}---- Concrete Syntax Tree ---{Style.RESET_ALL}')
-print(tree.root_node)
-gir: list[TransHaibara.GIRCommand] = []
-trans.trans_source_file(tree.root_node, gir)
-print(f'{Fore.GREEN}---- GIR statements ----{Style.RESET_ALL}')
-print(gir)
-interp = Interpreter()
-interp.interp(gir)

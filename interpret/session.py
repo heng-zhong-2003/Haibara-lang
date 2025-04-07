@@ -2,11 +2,12 @@ from typing import Any, Callable
 import sys
 import json
 from openai.types.chat.chat_completion import ChatCompletion
-from zhipuai.core._sse_client import StreamResponse
-from zhipuai.types.chat.chat_completion import Completion
-from zhipuai.types.chat.chat_completion_chunk import ChatCompletionChunk
+# Chih-P'u does not provide typing stub!.
+from zhipuai.core._sse_client import StreamResponse # type: ignore
+from zhipuai.types.chat.chat_completion import Completion # type: ignore
+from zhipuai.types.chat.chat_completion_chunk import ChatCompletionChunk # type: ignore
+from zhipuai import ZhipuAI # type: ignore
 from frontend.cst_to_gir import TransHaibara
-from zhipuai import ZhipuAI
 from openai import OpenAI
 from colorama import Fore, Style
 
@@ -61,6 +62,7 @@ class Session():
         Signature (especiall return type) will be further refined in refactoring.
         """
         self.context.append({'role': 'user', 'content': prompt})
+        # print(f'{Fore.RED}{self.context}{Style.RESET_ALL}')
         response: ChatCompletion | Completion | StreamResponse[ChatCompletionChunk] = \
             self.client.chat.completions \
             .create(model='glm-4-plus', messages=self.context) # type: ignore

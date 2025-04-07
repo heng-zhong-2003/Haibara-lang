@@ -18,7 +18,15 @@
         "required": true,
         "types": [
           {
+            "type": "bop_add",
+            "named": true
+          },
+          {
             "type": "bop_and",
+            "named": true
+          },
+          {
+            "type": "bop_div",
             "named": true
           },
           {
@@ -34,7 +42,15 @@
             "named": true
           },
           {
+            "type": "bop_mul",
+            "named": true
+          },
+          {
             "type": "bop_or",
+            "named": true
+          },
+          {
+            "type": "bop_sub",
             "named": true
           }
         ]
@@ -127,6 +143,42 @@
     }
   },
   {
+    "type": "if_statement",
+    "named": true,
+    "fields": {
+      "cond": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expr",
+            "named": true
+          }
+        ]
+      },
+      "else_clause": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "statement",
+            "named": true
+          }
+        ]
+      },
+      "then_clause": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "statement",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "llm",
     "named": true,
     "fields": {}
@@ -145,6 +197,10 @@
         },
         {
           "type": "primary_identifier_expr",
+          "named": true
+        },
+        {
+          "type": "primary_int_literal_expr",
           "named": true
         },
         {
@@ -214,6 +270,26 @@
     "type": "primitive_type",
     "named": true,
     "fields": {
+      "bool_type": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "Bool",
+            "named": false
+          }
+        ]
+      },
+      "int_type": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "Int",
+            "named": false
+          }
+        ]
+      },
       "session_type": {
         "multiple": false,
         "required": false,
@@ -428,11 +504,38 @@
           "named": true
         },
         {
+          "type": "if_statement",
+          "named": true
+        },
+        {
           "type": "print_statement",
           "named": true
         },
         {
           "type": "query_statement",
+          "named": true
+        },
+        {
+          "type": "statement_block_statement",
+          "named": true
+        },
+        {
+          "type": "while_statement",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "statement_block_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "statement",
           "named": true
         }
       ]
@@ -456,6 +559,32 @@
           "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "while_statement",
+    "named": true,
+    "fields": {
+      "cond": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expr",
+            "named": true
+          }
+        ]
+      },
+      "do_clause": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "statement",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -483,6 +612,14 @@
     "named": false
   },
   {
+    "type": "Bool",
+    "named": false
+  },
+  {
+    "type": "Int",
+    "named": false
+  },
+  {
     "type": "Session",
     "named": false
   },
@@ -495,7 +632,15 @@
     "named": false
   },
   {
+    "type": "bop_add",
+    "named": true
+  },
+  {
     "type": "bop_and",
+    "named": true
+  },
+  {
+    "type": "bop_div",
     "named": true
   },
   {
@@ -511,11 +656,27 @@
     "named": true
   },
   {
+    "type": "bop_mul",
+    "named": true
+  },
+  {
     "type": "bop_or",
     "named": true
   },
   {
+    "type": "bop_sub",
+    "named": true
+  },
+  {
     "type": "construct_session",
+    "named": false
+  },
+  {
+    "type": "do",
+    "named": false
+  },
+  {
+    "type": "else",
     "named": false
   },
   {
@@ -527,11 +688,19 @@
     "named": true
   },
   {
+    "type": "if",
+    "named": false
+  },
+  {
     "type": "let",
     "named": false
   },
   {
     "type": "primary_false_expr",
+    "named": true
+  },
+  {
+    "type": "primary_int_literal_expr",
     "named": true
   },
   {
@@ -563,7 +732,15 @@
     "named": false
   },
   {
+    "type": "then",
+    "named": false
+  },
+  {
     "type": "user",
+    "named": false
+  },
+  {
+    "type": "while",
     "named": false
   },
   {
